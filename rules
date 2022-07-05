@@ -1,0 +1,31 @@
+wan="enp0s3"
+lan="192.168.10.0/24"
+
+
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -F
+
+
+#iptables -P INPUT DROP
+#iptables -P OUTPUT DROP
+#iptables -P FORWARD DROP
+
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -t nat -P PREROUTING ACCEPT
+iptables -t nat -P POSTROUTING ACCEPT
+
+#************************#
+#  ACTIVACION DE ROUTER  #
+#************************#
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+#***********************#
+#   ACTIVADOR DE NAT    #
+#***********************#
+
+iptables -t nat -A POSTROUTING -o $wan -s $lan -j MASQUERADE
